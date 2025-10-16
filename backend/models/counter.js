@@ -1,9 +1,8 @@
-const Counter = require('./counter');
+const mongoose = require('mongoose');
 
+const counterSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  seq: { type: Number, default: 0 },
+});
 
-const counter = await Counter.findOneAndUpdate(
-  { id: 'bwebId' },
-  { $inc: { seq: 1 } },
-  { new: true, upsert: true }
-);
-this.customId = `Bweb${counter.seq.toString().padStart(3, '0')}`;
+module.exports = mongoose.model('Counter', counterSchema);

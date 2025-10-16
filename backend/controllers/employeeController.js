@@ -1,35 +1,32 @@
 const Employee = require('../models/Employee');
-const Counter = require('../models/counter'); // Counter model for auto-increment IDs
+const getNextId = require('../utils/getNextId');
+const fs = require('fs');
+const path = require('path');
 
-// Create Employee with auto-increment customId
+// CREATE Employee
 exports.createEmployee = async (req, res) => {
   try {
-    const employee = new Employee(req.body);
+    const customId = await getNextId('EMP', 'employeeId');
 
-    // Save triggers pre-save hook for customId
+    const employee = new Employee({
+      ...req.body,
+      customId,
+      image: req.files?.image?.[0]?.filename || '',
+      resume: req.files?.resume?.[0]?.filename || '',
+    });
+
     await employee.save();
 
-    res.status(201).json({
-      isOk: true,
-      message: 'Employee created successfully',
-      data: employee, // includes customId like Bweb001
-    });
+    res.status(201).json({ isOk: true, message: 'Employee created successfully', data: employee });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({
-        isOk: false,
-        message: 'Email already exists',
-      });
-    }
+    if (error.code === 11000)
+      return res.status(400).json({ isOk: false, message: 'Email already exists' });
 
-    res.status(400).json({
-      isOk: false,
-      message: error.message,
-    });
+    res.status(400).json({ isOk: false, message: error.message });
   }
 };
 
-// Get all employees with optional search and sorting
+// GET all employees
 exports.getEmployees = async (req, res) => {
   try {
     const search = req.query.search || '';
@@ -39,7 +36,7 @@ exports.getEmployees = async (req, res) => {
     const query = search
       ? {
           $or: [
-            { customId: { $regex: search, $options: 'i' } }, // search by customId
+            { customId: { $regex: search, $options: 'i' } },
             { firstName: { $regex: search, $options: 'i' } },
             { lastName: { $regex: search, $options: 'i' } },
             { email: { $regex: search, $options: 'i' } },
@@ -51,99 +48,52 @@ exports.getEmployees = async (req, res) => {
       : {};
 
     const employees = await Employee.find(query).sort({ [sorton]: sortdir });
-
-    res.status(200).json({
-      isOk: true,
-      count: employees.length,
-      data: employees,
-    });
+    res.status(200).json({ isOk: true, count: employees.length, data: employees });
   } catch (error) {
-    res.status(500).json({
-      isOk: false,
-      message: error.message,
-    });
+    res.status(500).json({ isOk: false, message: error.message });
   }
 };
 
-// Get single employee by MongoDB _id
+// GET Employee by ID
 exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
-    if (!employee) {
-      return res.status(404).json({
-        isOk: false,
-        message: 'Employee not found',
-      });
-    }
-
-    res.status(200).json({
-      isOk: true,
-      data: employee,
-    });
+    if (!employee) return res.status(404).json({ isOk: false, message: 'Employee not found' });
+    res.status(200).json({ isOk: true, data: employee });
   } catch (error) {
-    res.status(500).json({
-      isOk: false,
-      message: error.message,
-    });
+    res.status(500).json({ isOk: false, message: error.message });
   }
 };
 
-// Update employee details
+// UPDATE Employee
 exports.updateEmployee = async (req, res) => {
   try {
-    const updated = await Employee.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!updated) {
-      return res.status(404).json({
-        isOk: false,
-        message: 'Employee not found',
-      });
+    if (req.files) {
+      if (req.files.image) req.body.image = req.files.image[0].filename;
+      if (req.files.resume) req.body.resume = req.files.resume[0].filename;
     }
 
-    res.status(200).json({
-      isOk: true,
-      message: 'Employee updated successfully',
-      data: updated,
-    });
+    const updated = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ isOk: false, message: 'Employee not found' });
+
+    res.status(200).json({ isOk: true, message: 'Employee updated successfully', data: updated });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({
-        isOk: false,
-        message: 'Email already exists',
-      });
-    }
-
-    res.status(400).json({
-      isOk: false,
-      message: error.message,
-    });
+    if (error.code === 11000) return res.status(400).json({ isOk: false, message: 'Email already exists' });
+    res.status(400).json({ isOk: false, message: error.message });
   }
 };
 
-// Delete employee
+// DELETE Employee
 exports.deleteEmployee = async (req, res) => {
   try {
     const removed = await Employee.findByIdAndDelete(req.params.id);
+    if (!removed) return res.status(404).json({ isOk: false, message: 'Employee not found' });
 
-    if (!removed) {
-      return res.status(404).json({
-        isOk: false,
-        message: 'Employee not found',
-      });
-    }
+    if (removed.image) fs.unlinkSync(path.join(__dirname, '../uploads/', removed.image));
+    if (removed.resume) fs.unlinkSync(path.join(__dirname, '../uploads/', removed.resume));
 
-    res.status(200).json({
-      isOk: true,
-      message: 'Employee deleted successfully',
-    });
+    res.status(200).json({ isOk: true, message: 'Employee deleted successfully' });
   } catch (error) {
-    res.status(500).json({
-      isOk: false,
-      message: error.message,
-    });
+    res.status(500).json({ isOk: false, message: error.message });
   }
 };
