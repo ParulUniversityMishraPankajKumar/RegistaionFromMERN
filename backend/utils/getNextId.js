@@ -1,14 +1,16 @@
 
-const utils =   require('./getNextId')
 const Counter = require('../models/counter');
 
-async function getNextId(prefix = 'EMP', counterId = 'employeeId') {
+const generateCustomId = async () => {
+  // Find counter for employees and increment it
   const counter = await Counter.findOneAndUpdate(
-    { id: counterId },
-    { $inc: { seq: 1 } },
-    { new: true, upsert: true }
+    { id: 'employeeId' },       // counter identifier
+    { $inc: { seq: 1 } },       // increment seq by 1
+    { new: true, upsert: true } // create if it doesn't exist
   );
-  return `${prefix}${counter.seq.toString().padStart(3, '0')}`;
-}
 
-module.exports = getNextId;
+  // Return formatted ID like .
+  return `BWEB${counter.seq.toString().padStart(3, '0')}`;
+};
+
+module.exports = generateCustomId;
