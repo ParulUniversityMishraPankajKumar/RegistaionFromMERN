@@ -87,7 +87,8 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
             <tbody>
               {employees.length === 0 ? (
                 <tr>
-                  <td colSpan="13" className="text-muted">
+                  <td colSpan="13
+                  ." className="text-muted">
                     No employees found
                   </td>
                 </tr>
