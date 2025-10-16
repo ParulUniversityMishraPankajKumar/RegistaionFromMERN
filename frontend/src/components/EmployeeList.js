@@ -6,7 +6,6 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Fetch Employees
   const fetchEmployees = async () => {
     setLoading(true);
     try {
@@ -24,13 +23,13 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
     fetchEmployees();
   }, [refreshKey]);
 
-  // Search handler
+  
   const handleSearch = async (e) => {
     e.preventDefault();
     await fetchEmployees();
   };
 
-  // Delete handler
+ 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this employee?')) return;
     try {
@@ -48,7 +47,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h5 className="mb-0">Employee Records ({employees.length})</h5>
 
-        {/* Search Form */}
+      
         <form className="d-flex" onSubmit={handleSearch}>
           <input
             className="form-control form-control-sm"

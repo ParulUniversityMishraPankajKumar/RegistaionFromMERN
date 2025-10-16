@@ -9,7 +9,7 @@ const employeeSchema = new mongoose.Schema(
     },
 
     uploadImage: {
-      type: String, // Store file path or URL
+      type: String, 
       required: [true, 'Upload image is required'],
       trim: true,
     },
@@ -42,7 +42,7 @@ const employeeSchema = new mongoose.Schema(
     },
 
     uploadResume: {
-      type: String, // File path or URL
+      type: String, 
       required: [true, 'Upload resume is required'],
       trim: true,
     },

@@ -1,6 +1,6 @@
 const Employee = require('../models/Employee');
 
-// ✅ CREATE Employee
+
 exports.createEmployee = async (req, res) => {
   try {
     const employee = new Employee(req.body);
@@ -26,7 +26,7 @@ exports.createEmployee = async (req, res) => {
   }
 };
 
-// ✅ GET All Employees (with search + sort)
+
 exports.getEmployees = async (req, res) => {
   try {
     const search = req.query.search || '';
@@ -61,7 +61,6 @@ exports.getEmployees = async (req, res) => {
   }
 };
 
-// ✅ GET Single Employee by ID
 exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
@@ -84,7 +83,7 @@ exports.getEmployeeById = async (req, res) => {
   }
 };
 
-// ✅ UPDATE Employee
+
 exports.updateEmployee = async (req, res) => {
   try {
     const updated = await Employee.findByIdAndUpdate(
@@ -120,7 +119,6 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
-// ✅ DELETE Employee
 exports.deleteEmployee = async (req, res) => {
   try {
     const removed = await Employee.findByIdAndDelete(req.params.id);

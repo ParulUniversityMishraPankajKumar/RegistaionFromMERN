@@ -89,7 +89,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -138,7 +137,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
       </h5>
 
       <form onSubmit={handleSubmit}>
-        {/* Image Upload */}
+    
         <div className="row">
           <div className="col-md-6 mb-3">
             <label>Profile Image</label>
@@ -173,7 +172,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           </div>
         </div>
 
-        {/* Basic Info */}
         <div className="row">
           <div className="col-md-6 mb-3">
             <label>First Name</label>
@@ -200,7 +198,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           </div>
         </div>
 
-        {/* Contact */}
         <div className="mb-3">
           <label>Email</label>
           <input
@@ -227,7 +224,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           {errors.mobile && <div className="invalid-feedback">{errors.mobile}</div>}
         </div>
 
-        {/* Location Fields */}
+ 
         <div className="row">
           <div className="col-md-4 mb-3">
             <label>Country</label>
@@ -291,7 +288,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           </div>
         </div>
 
-        {/* Pincode */}
         <div className="mb-3">
           <label>Pincode</label>
           <input
@@ -305,7 +301,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           {errors.pincode && <div className="invalid-feedback">{errors.pincode}</div>}
         </div>
 
-        {/* Address */}
         <div className="mb-3">
           <label>Address</label>
           <textarea
@@ -319,7 +314,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           {errors.address && <div className="invalid-feedback">{errors.address}</div>}
         </div>
 
-        {/* Gender */}
         <div className="mb-3">
           <label>Gender</label>
           <div>
@@ -340,7 +334,6 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
           {errors.gender && <div className="text-danger small">{errors.gender}</div>}
         </div>
 
-        {/* Buttons */}
         <div className="d-flex gap-2">
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Please wait...' : editing ? 'Update Employee' : 'Save Employee'}
