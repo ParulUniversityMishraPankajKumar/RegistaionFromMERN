@@ -1,15 +1,18 @@
 const Employee = require('../models/Employee');
+const Counter = require('../models/counter'); // Counter model for auto-increment IDs
 
-
+// Create Employee with auto-increment customId
 exports.createEmployee = async (req, res) => {
   try {
     const employee = new Employee(req.body);
+
+    // Save triggers pre-save hook for customId
     await employee.save();
 
     res.status(201).json({
       isOk: true,
       message: 'Employee created successfully',
-      data: employee,
+      data: employee, // includes customId like Bweb001
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -26,7 +29,7 @@ exports.createEmployee = async (req, res) => {
   }
 };
 
-
+// Get all employees with optional search and sorting
 exports.getEmployees = async (req, res) => {
   try {
     const search = req.query.search || '';
@@ -36,6 +39,7 @@ exports.getEmployees = async (req, res) => {
     const query = search
       ? {
           $or: [
+            { customId: { $regex: search, $options: 'i' } }, // search by customId
             { firstName: { $regex: search, $options: 'i' } },
             { lastName: { $regex: search, $options: 'i' } },
             { email: { $regex: search, $options: 'i' } },
@@ -61,6 +65,7 @@ exports.getEmployees = async (req, res) => {
   }
 };
 
+// Get single employee by MongoDB _id
 exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
@@ -83,7 +88,7 @@ exports.getEmployeeById = async (req, res) => {
   }
 };
 
-
+// Update employee details
 exports.updateEmployee = async (req, res) => {
   try {
     const updated = await Employee.findByIdAndUpdate(
@@ -119,6 +124,7 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
+// Delete employee
 exports.deleteEmployee = async (req, res) => {
   try {
     const removed = await Employee.findByIdAndDelete(req.params.id);

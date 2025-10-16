@@ -1,86 +1,146 @@
-const mongoose = require('mongoose');
+const Employee = require('../models/Employee');
+const Counter = require('../models/counter'); 
 
-const employeeSchema = new mongoose.Schema(
-  {
-    isActive: {
-      type: Boolean,
-      default: true,
-      required: true,
-    },
+exports.createEmployee = async (req, res) => {
+  try {
+    const employee = new Employee(req.body);
+    await employee.save();
 
-    uploadImage: {
-      type: String, 
-      required: [true, 'Upload image is required'],
-      trim: true,
-    },
+    res.status(201).json({
+      isOk: true,
+      message: 'Employee created successfully',
+      data: employee, 
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        isOk: false,
+        message: 'Email already exists',
+      });
+    }
 
-    firstName: {
-      type: String,
-      required: [true, 'First name is required'],
-      trim: true,
-    },
+    res.status(400).json({
+      isOk: false,
+      message: error.message,
+    });
+  }
+};
 
-    lastName: {
-      type: String,
-      required: [true, 'Last name is required'],
-      trim: true,
-    },
 
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      match: [/^\S+@\S+\.\S+$/, 'Invalid email format'],
-      trim: true,
-    },
+exports.getEmployees = async (req, res) => {
+  try {
+    const search = req.query.search || '';
+    const sorton = req.query.sorton || 'createdAt';
+    const sortdir = req.query.sortdir === 'asc' ? 1 : -1;
 
-    mobile: {
-      type: String,
-      required: [true, 'Mobile number is required'],
-      match: [/^\d{10}$/, 'Mobile number must be 10 digits'],
-      trim: true,
-    },
+    const query = search
+      ? {
+          $or: [
+            { firstName: { $regex: search, $options: 'i' } },
+            { lastName: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } },
+            { city: { $regex: search, $options: 'i' } },
+            { country: { $regex: search, $options: 'i' } },
+            { state: { $regex: search, $options: 'i' } },
+            { customId: { $regex: search, $options: 'i' } },
+          ],
+        }
+      : {};
 
-    uploadResume: {
-      type: String, 
-      required: [true, 'Upload resume is required'],
-      trim: true,
-    },
+    const employees = await Employee.find(query).sort({ [sorton]: sortdir });
 
-    country: {
-      type: String,
-      required: [true, 'Country is required'],
-    },
+    res.status(200).json({
+      isOk: true,
+      count: employees.length,
+      data: employees,
+    });
+  } catch (error) {
+    res.status(500).json({
+      isOk: false,
+      message: error.message,
+    });
+  }
+};
 
-    state: {
-      type: String,
-      required: [true, 'State is required'],
-    },
+// Get single employee by MongoDB _id
+exports.getEmployeeById = async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    if (!employee) {
+      return res.status(404).json({
+        isOk: false,
+        message: 'Employee not found',
+      });
+    }
 
-    city: {
-      type: String,
-      required: [true, 'City is required'],
-    },
+    res.status(200).json({
+      isOk: true,
+      data: employee,
+    });
+  } catch (error) {
+    res.status(500).json({
+      isOk: false,
+      message: error.message,
+    });
+  }
+};
 
-    pincode: {
-      type: String,
-      required: [true, 'Pincode is required'],
-      match: [/^\d{6}$/, 'Pincode must be 6 digits'],
-    },
+// Update employee details
+exports.updateEmployee = async (req, res) => {
+  try {
+    const updated = await Employee.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
 
-    address: {
-      type: String,
-      required: [true, 'Address is required'],
-      minlength: [10, 'Address must be at least 10 characters'],
-    },
+    if (!updated) {
+      return res.status(404).json({
+        isOk: false,
+        message: 'Employee not found',
+      });
+    }
 
-    gender: {
-      type: String,
-      enum: ['Male', 'Female', 'Other'],
-      required: [true, 'Gender is required'],
-    },
-  },
-  { timestamps: true }
-);
+    res.status(200).json({
+      isOk: true,
+      message: 'Employee updated successfully',
+      data: updated,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        isOk: false,
+        message: 'Email already exists',
+      });
+    }
 
-module.exports = mongoose.model('Employee', employeeSchema);
+    res.status(400).json({
+      isOk: false,
+      message: error.message,
+    });
+  }
+};
+
+// Delete employee
+exports.deleteEmployee = async (req, res) => {
+  try {
+    const removed = await Employee.findByIdAndDelete(req.params.id);
+
+    if (!removed) {
+      return res.status(404).json({
+        isOk: false,
+        message: 'Employee not found',
+      });
+    }
+
+    res.status(200).json({
+      isOk: true,
+      message: 'Employee deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      isOk: false,
+      message: error.message,
+    });
+  }
+};

@@ -144,7 +144,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
             <input
               type="file"
               name="image"
-              accept="image/*"
+              accept="image/*,jpeg,jpg"
               onChange={handleChange}
               className={`form-control ${errors.image ? 'is-invalid' : ''}`}
             />
