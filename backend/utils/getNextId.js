@@ -1,4 +1,3 @@
-
 const Counter = require('../models/counter');
 
 const generateCustomId = async () => {

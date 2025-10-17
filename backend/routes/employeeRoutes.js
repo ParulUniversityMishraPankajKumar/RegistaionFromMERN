@@ -38,19 +38,19 @@ const upload = multer({
 });
 
 // CRUD routes
-router.post('/', upload.fields([
+router.post('/create', upload.fields([
   { name: 'image', maxCount: 1 },
   { name: 'resume', maxCount: 1 }
 ]), controller.createEmployee);
 
-router.get('/', controller.getEmployees);
-router.get('/:id', controller.getEmployeeById);
+router.get('/get', controller.getEmployees);
+router.get('/get/:id', controller.getEmployeeById);
 
-router.put('/:id', upload.fields([
+router.put('/update/:id', upload.fields([
   { name: 'image', maxCount: 1 },
   { name: 'resume', maxCount: 1 }
 ]), controller.updateEmployee);
 
-router.delete('/:id', controller.deleteEmployee);
+router.delete('/delete/:id', controller.deleteEmployee);
 
 module.exports = router;

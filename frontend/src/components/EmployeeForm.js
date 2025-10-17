@@ -70,7 +70,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!form.firstName || form.firstName.trim().length < 2) {
       newErrors.firstName = 'First name must be at least 2 characters';
     }
@@ -91,7 +91,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
     if (!form.state) newErrors.state = 'State is required';
     if (!form.city) newErrors.city = 'City is required';
     if (!form.gender) newErrors.gender = 'Please select gender';
-    
+
     // Optional fields validation
     if (form.pincode && !/^\d{6}$/.test(form.pincode)) {
       newErrors.pincode = 'Pincode must be 6 digits';
@@ -99,7 +99,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
     if (form.salary && isNaN(form.salary)) {
       newErrors.salary = 'Salary must be a number';
     }
-    
+
     // File validation for new employees
     if (!editing && !form.image) {
       newErrors.image = 'Profile image is required';
@@ -119,7 +119,7 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
     setLoading(true);
     try {
       const formData = new FormData();
-      
+
       // Append all text fields
       Object.keys(form).forEach(key => {
         if (key !== 'image' && key !== 'resume' && form[key] !== null && form[key] !== undefined && form[key] !== '') {
@@ -452,11 +452,11 @@ const EmployeeForm = ({ editing, onSaved, onCancel }) => {
               {loading ? ' Processing...' : editing ? ' Update Employee' : ' Save Employee'}
             </button>
             <button type="button" className="btn btn-warning px-4" onClick={handleClear} disabled={loading}>
-               Clear
+              Clear
             </button>
             {editing && (
               <button type="button" className="btn btn-secondary px-4" onClick={handleCancel} disabled={loading}>
-                 Cancel
+                Cancel
               </button>
             )}
           </div>

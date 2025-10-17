@@ -17,7 +17,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
           sortdir: sortConfig.direction
         }
       });
-      
+
       // Handle the nested data structure from backend
       const data = Array.isArray(res) ? res : res.data || [];
       setEmployees(data);
@@ -41,7 +41,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this employee?')) return;
-    
+
     try {
       await api.delete(`/${id}`);
       alert('Employee deleted successfully!');
@@ -68,10 +68,10 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
     <div className="card p-3 shadow-sm">
       <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h5 className="mb-0">
-          👥 Employee Records 
+          👥 Employee Records
           <span className="badge bg-primary ms-2">{employees.length}</span>
         </h5>
-        
+
         <form className="d-flex" onSubmit={handleSearch}>
           <input
             className="form-control form-control-sm"
@@ -81,7 +81,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
             style={{ minWidth: '250px' }}
           />
           <button className="btn btn-sm btn-outline-primary ms-2" type="submit">
-             Search
+            Search
           </button>
           {search && (
             <button
@@ -89,7 +89,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
               type="button"
               onClick={() => { setSearch(''); }}
             >
-              
+
             </button>
           )}
         </form>
@@ -190,7 +190,7 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
                           rel="noopener noreferrer"
                           className="btn btn-sm btn-outline-info"
                         >
-                           View
+                          View
                         </a>
                       ) : (
                         <span className="text-muted small">No File</span>
@@ -210,14 +210,14 @@ const EmployeeList = ({ onEdit, refreshKey }) => {
                           onClick={() => onEdit(emp)}
                           title="Edit Employee"
                         >
-                           Edit
+                          Edit
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(emp._id)}
                           title="Delete Employee"
                         >
-                           Delete
+                          Delete
                         </button>
                       </div>
                     </td>

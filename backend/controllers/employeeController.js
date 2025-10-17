@@ -51,16 +51,16 @@ exports.getEmployees = async (req, res) => {
 
     const query = search
       ? {
-          $or: [
-            { customId: { $regex: search, $options: 'i' } },
-            { firstName: { $regex: search, $options: 'i' } },
-            { lastName: { $regex: search, $options: 'i' } },
-            { email: { $regex: search, $options: 'i' } },
-            { city: { $regex: search, $options: 'i' } },
-            { country: { $regex: search, $options: 'i' } },
-            { state: { $regex: search, $options: 'i' } },
-          ],
-        }
+        $or: [
+          { customId: { $regex: search, $options: 'i' } },
+          { firstName: { $regex: search, $options: 'i' } },
+          { lastName: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { city: { $regex: search, $options: 'i' } },
+          { country: { $regex: search, $options: 'i' } },
+          { state: { $regex: search, $options: 'i' } },
+        ],
+      }
       : {};
 
     const employees = await Employee.find(query).sort({ [sorton]: sortdir });
@@ -82,7 +82,7 @@ exports.getEmployees = async (req, res) => {
 exports.getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
-    
+
     if (!employee) {
       return res.status(404).json({
         isOk: false,
@@ -151,7 +151,7 @@ exports.updateEmployee = async (req, res) => {
 exports.deleteEmployee = async (req, res) => {
   try {
     const removed = await Employee.findByIdAndDelete(req.params.id);
-    
+
     if (!removed) {
       return res.status(404).json({
         isOk: false,
